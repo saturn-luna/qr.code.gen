@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Генератор QR-кода</title>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode/build/qrcode.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+        }
+
+        label {
+            font-weight: bold;
+            color: #333;
+            margin-top: 10px;
+            display: block;
+        }
+
+        input[type="text"], input[type="date"] {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        #qrcode {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        #download-btn {
+            background-color: #007bff;
+            margin-top: 20px;
+        }
+
+        #download-btn:hover {
+            background-color: #0056b3;
+        }
+
+        .input-group {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Генератор QR-кода</h1>
+
+    <div class="container">
+        <div class="input-group">
+            <label for="text-input">Дата сервиса:</label>
+            <input type="date" id="text-input" />
+        </div>
+
+        <div class="input-group">
+            <label for="extra-input1">Результаты ремонта:</label>
+            <input type="text" id="extra-input1" placeholder="Введите текст" />
+        </div>
+
+        <div class="input-group">
+            <label for="extra-input2">Итоги:</label>
+            <input type="text" id="extra-input2" placeholder="Введите текст" />
+        </div>
+
+
+        <button onclick="generateQRCode()">Сгенерировать QR-код</button>
+
+        <div id="qrcode"></div>
+
+        <button id="download-btn" style="display: none;" onclick="downloadQRCode()">Скачать QR-код</button>
+    </div>
+
+    <script>
+        function generateQRCode() {
+            var date = document.getElementById("text-input").value;
+            var extraText1 = document.getElementById("extra-input1").value;
+            var extraText2 = document.getElementById("extra-input2").value;
+
+            // Составление данных для QR-кода
+            var qrCodeData = "Дата сервиса: " + date + "; Результаты ремонта: " + extraText1 + "; Итоги: " + extraText2;
+
+            QRCode.toDataURL(qrCodeData, function(error, url) {
+                if (error) {
+                    console.error(error);
+                    return;
+                }
+
+                var img = document.createElement("img");
+                img.src = url;
+                document.getElementById("qrcode").innerHTML = ''; 
+                document.getElementById("qrcode").appendChild(img);
+
+                document.getElementById("download-btn").style.display = 'inline-block';
+                img.id = 'download-img';
+            });
+        }
+
+        function downloadQRCode() {
+            var img = document.getElementById("download-img");
+            var link = document.createElement("a");
+            link.href = img.src;
+            link.download = "qr_code.png";
+            link.click();
+        }
+    </script>
+</body>
+</html>
